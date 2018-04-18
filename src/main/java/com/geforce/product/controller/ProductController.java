@@ -10,9 +10,7 @@ import com.geforce.product.vo.ProductVO;
 import com.geforce.product.vo.ResultVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +34,7 @@ public class ProductController {
 
     @GetMapping("/list")
     public ResultVO<List<ProductVO>> list() {
-        List<ProductInfo> productInfoList =   productService.findUpAll();
+        List<ProductInfo> productInfoList = productService.findUpAll();
 
         List<Integer> categoryTypeList = productInfoList.stream()
                 .map(ProductInfo::getCategoryType)
@@ -53,10 +51,10 @@ public class ProductController {
             productVO.setCategoryType(productCategory.getCategoryType());
             List<ProductInfoVo> productInfoVoList = new ArrayList<>();
             for (ProductInfo productInfo : productInfoList) {
-                if (productInfo.getCategoryType().equals(productCategory.getCategoryType())){
+                if (productInfo.getCategoryType().equals(productCategory.getCategoryType())) {
                     ProductInfoVo productInfoVo = new ProductInfoVo();
 
-                    BeanUtils.copyProperties(productInfo,productInfoVo);
+                    BeanUtils.copyProperties(productInfo, productInfoVo);
                     productInfoVoList.add(productInfoVo);
                 }
 
@@ -67,6 +65,12 @@ public class ProductController {
 
         ResultVO<List<ProductVO>> resultVO = ResultVOUtil.success(productVOList);
         return resultVO;
+    }
+
+
+    @PostMapping("/listForOrder")
+    public List<ProductInfo> listForOrder(@RequestBody List<String> productIds) {
+        return productService.findList(productIds);
     }
 
 }
